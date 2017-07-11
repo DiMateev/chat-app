@@ -155,21 +155,30 @@ button:disabled {
 }
 
 .message {
-  padding: 10px;
+  padding: 5px 10px;
+}
+
+.message:nth-child(even) {
+  background-color: rgb(255, 245, 245);
 }
 
 .message__title {
   display: flex;
-  margin-bottom: 5px;
 }
 
 .message__title h4 {
   font-weight: 600;
   margin-right: 10px;
+  min-width: 100px;
 }
 
 .message__title span {
   color: #999;
+}
+
+.message__title .message__body {
+  margin-left: 20px;
+  color: purple;
 }
 
 @media (max-width: 600px) {
