@@ -55,7 +55,7 @@ io.on('connection', (socket) => {
 
     if (user) {
       io.to(user.room).emit('updateUsersList', users.getUserList(user.room));
-      io.to(user.room).emit('createMessage', createMessage('Admin', `${user.name} has left the room!`));
+      io.to(user.room).emit('newMessage', createMessage('Admin', `${user.name} has left the room!`));
     }
   });
 });
