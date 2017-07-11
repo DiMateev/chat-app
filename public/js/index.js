@@ -11,3 +11,10 @@ var socket = io();
   socket.on('newMessage', function(message) {
     console.log('New message', message);
   });
+
+  socket.emit('createMessage', {
+    from: 'Frank',
+    text: 'Hi'
+  }, (data) => {
+    console.log('Got it.', data);
+  });
