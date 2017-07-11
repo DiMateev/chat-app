@@ -73,7 +73,6 @@ function scrollToBottom () {
     e.preventDefault();
     var messageTextbox = $('[name=message]')
     socket.emit('createMessage', {
-      from: 'User',
       text: messageTextbox.val(),
       createdAt: new Date().getTime()
     }, (data) => {
