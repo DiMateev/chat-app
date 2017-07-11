@@ -2,11 +2,20 @@
 <html>
   <head>
     <title>Chat app</title>
+    <link href="/css/index.css" type="text/css" rel="stylesheet">
   </head>
   <body>
-    <p>This is my chat app</p>
+    <p>Chat App</p>
+
+    <ul id="messages"></ul>
+
+    <form id="form-message">
+      <input name="message" type="text" placeholder="Message" />
+      <button>SEND</button>
+    </form>
 
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/libs/jquery-3.2.1.min.js"></script>
     <script src="/js/index.js"></script>
   </body>
 </html>

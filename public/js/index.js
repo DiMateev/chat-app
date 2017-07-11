@@ -9,12 +9,20 @@ var socket = io();
   });
 
   socket.on('newMessage', function(message) {
-    console.log('New message', message);
+    var li = $('<li></li>');
+    li.text(`${message.from}: ${message.text}`);
+
+    $('#messages').append(li);
   });
 
-  socket.emit('createMessage', {
-    from: 'Frank',
-    text: 'Hi'
-  }, (data) => {
+  $('#form-message').on('submit', function (e) {
+    e.preventDefault();
+    socket.emit('createMessage', {
+      from: 'User',
+      text: $('[name=message]').val(),
+      createdAt: new Date().getTime()
+    }, (data) => {
     console.log('Got it.', data);
+  });
+    $('[name=message]').val(" ");
   });
