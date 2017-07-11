@@ -1,7 +1,11 @@
-body, form, input, button, ul, li, p {
+body, form, input, button, ul, li, p, a {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+body {
+  padding-bottom: 40px;
 }
 
 p {
@@ -21,7 +25,7 @@ p {
 
 #form-message input {
   display: inline-block;
-  width: 85vw;
+  width: 80vw;
   line-height: 20px;
   margin: 10px 1vw;
   font-size: 18px;
