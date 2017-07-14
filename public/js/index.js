@@ -16,7 +16,7 @@ socket.on('updateRoomsList', function (rooms) {
 function generateRoomsList (roomList) {
   var label = $('<label></label>').text('Join room');
   var select = $('<select></select>').attr({'id': 'join', 'name': 'join'});
-  select.append($('<option></option').attr({'value': 'new', 'selected': 'selected'}).text('Create New Room'));
+  select.append($('<option></option').attr({'value': '__new__', 'selected': 'selected'}).text('Create New Room'));
 
   roomList.forEach((room) => {
     select.append($('<option></option').attr('value', room).text(room));

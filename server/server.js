@@ -26,7 +26,10 @@ io.on('connection', (socket) => {
   });
 
   socket.on('join', (params, callback) => {
-    if (!isRealString(params.name) || !(isRealString(params.room) || isRealString(params.join))) {
+    var nameIsReal = isRealString(params.name);
+    var roomIsReal = isRealString(params.room);
+    var joinRoomIsReal = isRealString(params.join) && params.join !== '__new__';
+    if (!nameIsReal || !(roomIsReal || joinRoomIsReal)) {
       return callback('Display name and room are required!');
     }
 
