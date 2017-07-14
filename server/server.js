@@ -24,6 +24,12 @@ io.on('connection', (socket) => {
       return callback('Display name and room are required!');
     }
 
+    params.room = params.room.toLowerCase(); // Make rooms case insensitive
+
+    if (users.getUserList(params.room).indexOf(params.name) > -1) {
+      return callback('Display name you have entered, already exist in this room! Please choose different one!');
+    }
+
     socket.join(params.room);
     users.removeUser(socket.id);
     users.addUser(socket.id, params.name, params.room);
