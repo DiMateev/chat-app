@@ -17,17 +17,18 @@
           <input type="text" name="name" autofocus>
         </div>
         <div class="form-field">
-          <label>Create New Room</label>
-          <input type="text" name="room">
+          <label>New Room</label>
+          <input type="text" name="room" id="room">
         </div>
-        <div class="form-field">
-          <label>Join room</label>
-          <select name="join" id="join"></select>
-        </div>
+        <div class="form-field" id="openRooms"></div>
         <div class="form-field">
           <button>Join</button>
         </div>
       </form>
     </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/libs/jquery-3.2.1.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/libs/deparam.js"></script>
   </body>
 </html>

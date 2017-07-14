@@ -9,34 +9,46 @@ const port = process.env.PORT || 3000;
 const {createMessage, createLocationMessage} = require('./utils/message');
 const {isRealString} = require('./utils/validators');
 const {Users} = require('./utils/users');
+const {Rooms} = require('./utils/rooms');
 
 var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
 var users = new Users();
+var rooms = new Rooms();
 
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
 
+  socket.on('generateRoomsList', () => {
+    socket.emit('updateRoomsList', rooms.rooms);
+  });
+
   socket.on('join', (params, callback) => {
-    if (!isRealString(params.name) || !isRealString(params.room)) {
+    if (!isRealString(params.name) || !(isRealString(params.room) || isRealString(params.join))) {
       return callback('Display name and room are required!');
     }
 
-    params.room = params.room.toLowerCase(); // Make rooms case insensitive
+    if (params.room) {
+      params.room = params.room.toLowerCase(); // Make rooms case insensitive
+    }
 
-    if (users.getUserList(params.room).indexOf(params.name) > -1) {
+    var roomToJoin = params.room || params.join;
+
+    // Check if Display name is already present in selected room
+    if (users.getUserList(roomToJoin).indexOf(params.name) > -1) {
       return callback('Display name you have entered, already exist in this room! Please choose different one!');
     }
 
-    socket.join(params.room);
+    socket.join(roomToJoin);
     users.removeUser(socket.id);
-    users.addUser(socket.id, params.name, params.room);
+    users.addUser(socket.id, params.name, roomToJoin);
+    rooms.addRoom(roomToJoin);
     
-    io.to(params.room).emit('updateUsersList', users.getUserList(params.room));
+    io.to(roomToJoin).emit('updateUsersList', users.getUserList(roomToJoin));
     socket.emit('newMessage', createMessage('Admin', 'Welcome to chat app!'));
-    socket.broadcast.to(params.room).emit('newMessage', createMessage('Admin', `${params.name} joined the chat room!`));
+    socket.broadcast.to(roomToJoin).emit('newMessage', createMessage('Admin', `${params.name} joined the chat room!`));
 
     callback();
   });
@@ -59,7 +71,9 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     var user = users.removeUser(socket.id);
 
-    if (user) {
+    if (user && users.getUserList(user.room).length === 0) {
+      rooms.deleteRoom(user.room);
+    } else if (user) {
       io.to(user.room).emit('updateUsersList', users.getUserList(user.room));
       io.to(user.room).emit('newMessage', createMessage('Admin', `${user.name} has left the room!`));
     }
