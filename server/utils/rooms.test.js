@@ -3,7 +3,7 @@ const expect = require('expect');
 const {Rooms} = require('./rooms');
 
 describe('Rooms class', () => {
-  var rooms = new Rooms();
+  var rooms = Object.create(Rooms);
 
   beforeEach(() => {
     rooms.rooms = ['GoT', 'LotR']
@@ -15,8 +15,9 @@ describe('Rooms class', () => {
     expect(rooms.rooms[0]).toBe('Example'); // Beacuse of the sorting 'Example should be first'
   });
 
-  it('should not add room if room already exists', () => {
-    rooms.addRoom(rooms.rooms[0]);
+  it('should not add room if room already exists (case insesitive)', () => {
+    rooms.addRoom(rooms.rooms[0].toUpperCase());
+    rooms.addRoom(rooms.rooms[0].toLowerCase());
     expect(rooms.rooms.length).toBe(2);
     expect(rooms.rooms[2]).toNotExist();
   });

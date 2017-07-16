@@ -3,10 +3,10 @@ const expect = require('expect');
 var {Users} = require('./users');
 
 describe('Users class', () => {
-  var users;
+  var users = Object.create(Users);
 
   beforeEach(() => {
-    users = new Users();
+    users.init();
     users.users = [{
       id: 1,
       name: 'Mike',
@@ -23,7 +23,6 @@ describe('Users class', () => {
   });
   
   it('should create a new user', () => {
-    var users = new Users();
     var user = {
       id: 123,
       name: 'Mitko',
@@ -31,7 +30,15 @@ describe('Users class', () => {
     };
     var resUser = users.addUser(user.id, user.name, user.room);
 
-    expect(users.users).toEqual([user]);
+    expect(resUser).toEqual(user);
+  });
+
+  it('should not create user with same name', () => {
+    var user = users.users[0];
+    var addUser = users.addUser(user.id, user.name, user.room);
+
+    expect(users.users.length).toBe(3);
+    expect(addUser).toNotExist();
   });
 
   it('should return all users is room A', () => {

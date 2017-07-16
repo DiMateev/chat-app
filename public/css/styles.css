@@ -79,6 +79,10 @@ button:disabled {
   padding: 10px;
 }
 
+.count {
+  color: rgb(47, 89, 129);
+}
+
 .chat {
   display: flex;
 }

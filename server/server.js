@@ -14,15 +14,21 @@ const {Rooms} = require('./utils/rooms');
 var app = express();
 var server = http.createServer(app);
 var io = socketIO(server);
-var users = new Users();
-var rooms = new Rooms();
+var users = Object.create(Users);
+var rooms = Object.create(Rooms);
+users.init();
+rooms.init();
 
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
 
   socket.on('generateRoomsList', () => {
-    socket.emit('updateRoomsList', rooms.rooms);
+    var roomsWithCount = [];
+    rooms.rooms.forEach((room) => {
+      roomsWithCount.push([room, users.getUserList(room.toLowerCase()).length]);
+    });
+    socket.emit('updateRoomsList', roomsWithCount);
   });
 
   socket.on('join', (params, callback) => {
@@ -31,25 +37,22 @@ io.on('connection', (socket) => {
       return callback('Display name and room are required!');
     }
 
-    if (params.room) {
-      params.room = params.room.toLowerCase(); // Make rooms case insensitive
-    }
-
     var roomToJoin = params.room || params.join;
+    rooms.addRoom(roomToJoin);
+    var lowerCaseRoom = roomToJoin.toLowerCase();
 
     // Check if Display name is already present in selected room
-    if (users.getUserList(roomToJoin).indexOf(params.name) > -1) {
+    users.removeUser(socket.id);
+    var user = users.addUser(socket.id, params.name, lowerCaseRoom);
+    if (!user) {
       return callback('Display name you have entered, already exist in this room! Please choose different one!');
     }
 
-    socket.join(roomToJoin);
-    users.removeUser(socket.id);
-    users.addUser(socket.id, params.name, roomToJoin);
-    rooms.addRoom(roomToJoin);
+    socket.join(lowerCaseRoom);
     
-    io.to(roomToJoin).emit('updateUsersList', users.getUserList(roomToJoin));
-    socket.emit('newMessage', createMessage('Admin', 'Welcome to chat app!'));
-    socket.broadcast.to(roomToJoin).emit('newMessage', createMessage('Admin', `${params.name} joined the chat room!`));
+    io.to(lowerCaseRoom).emit('updateUsersList', users.getUserList(lowerCaseRoom));
+    socket.emit('newMessage', createMessage('Admin', `Welcome to #${roomToJoin}!`));
+    socket.broadcast.to(lowerCaseRoom).emit('newMessage', createMessage('Admin', `${params.name} joined the chat room!`));
 
     callback();
   });

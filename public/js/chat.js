@@ -14,7 +14,7 @@ function scrollToBottom () {
     if (scrollTop + clientHeight + newMessageHeight + lastMessageHeight >= scrollHeight) {
       messages.scrollTop(scrollHeight);
     }
-};
+}
 
   socket.on('connect', function () {
     var params = $.deparam(window.location.search);
@@ -71,7 +71,7 @@ function scrollToBottom () {
 
   $('#form-message').on('submit', function (e) {
     e.preventDefault();
-    var messageTextbox = $('[name=message]')
+    var messageTextbox = $('[name=message]');
     socket.emit('createMessage', {
       text: messageTextbox.val(),
       createdAt: new Date().getTime()

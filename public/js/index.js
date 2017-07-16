@@ -5,21 +5,21 @@ socket.on('connect', function () {
   socket.emit('generateRoomsList');
 });
 
-socket.on('updateRoomsList', function (rooms) {
-  openRooms = rooms;
-  if (openRooms.length > 0) {
-    generateRoomsList(openRooms);
+socket.on('updateRoomsList', function (roomsWithCount) {
+  if (roomsWithCount.length > 0) {
+    generateRoomsList(roomsWithCount);
   }
 });
 
 
-function generateRoomsList (roomList) {
+function generateRoomsList (roomsWithCount) {
   var label = $('<label></label>').text('Join room');
   var select = $('<select></select>').attr({'id': 'join', 'name': 'join'});
   select.append($('<option></option').attr({'value': '', 'selected': 'selected'}).text('Create New Room'));
 
-  roomList.forEach((room) => {
-    select.append($('<option></option').attr('value', room).text(room));
+  roomsWithCount.forEach((room) => {
+    var option = $('<option></option').attr('value', room[0]).text(room[0] + ' (' + room[1] + ')');
+    select.append(option);
   });
 
   $('#openRooms').html(label);
